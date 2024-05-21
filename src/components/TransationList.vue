@@ -2,7 +2,7 @@
     <h3>History</h3>
     <ul id="list" class="list">
         <li :class="transaction.amount > 0 ? 'minus' : 'plus'" v-for="transaction in transactions" :key="transaction.id">
-               {{ transaction.text }} <span>{{ transaction.amount}}</span><button class="delete-btn">x</button>
+               {{ transaction.text }} <span>{{ transaction.amount}}</span><button @click="deleteTransaction(transaction.id)" class="delete-btn">x</button>
         </li>
       <!-- <li class="plus">
         Paychck <span>-$400</span><button class="delete-btn">x</button>
@@ -19,4 +19,10 @@
             required: true,
         }
     });
+
+    const emit = defineEmits(['deleteTransaction']);
+
+    const deleteTransaction = (id) => {
+        emit('deleteTransaction', id);
+    }
 </script>

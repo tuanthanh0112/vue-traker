@@ -3,10 +3,9 @@
   <div class="container">
     <Balance :total="total"/>
     <IncomeExpenses :income="income" :expenses="expenses"/>
-    <TransationList :transactions="transactions"/>
-    <AddTransaction @transactionSubmitted="handleTransactionSubmitted"/>
+    <TransationList :transactions="transactions" @deleteTransaction="handleDeteleTransaction"/>
+    <AddTransaction @transactionSubmitted="handleTransationSubmit" />
   </div>
-
 </template>
 
 <script setup>
@@ -21,13 +20,14 @@
   import { ref, computed, onMounted } from 'vue'
 
   const toast = useToast();
-  
+
   const transactions = ref([
     {id: 1, text:'Flower',amount: -19.99 },
     {id: 2, text:'Salary',amount: 299.97 },
     {id: 3, text:'Book',amount: -10 },
     {id: 4, text:'Camera',amount: 150 },
   ]);
+
   onMounted(() => {
     const saveTransation = JSON.parse(localStorage.getItem('transations'));
 
@@ -50,15 +50,25 @@
 
   }
 
+  const handleDeteleTransaction = (id) => {
+    transactions.value = transactions.value.filter(
+      (transaction) => transaction.id != id
+    );
+
+    saveTransactionTolocalStorage();
+
+    toast.success('Transaction deleted')
+  }
+
   const saveTransactionTolocalStorage = () => {
     localStorage.setItem('transactions', JSON.stringify(transactions.value))
   }
+
   const generateUniqueId = () => {
     return Math.floor(Math.random() * 1000000)
   }
 
   
-
   const total = computed(() => {
     return transactions.value.reduce((acc, transaction) => {
       return acc + transaction.amount;
